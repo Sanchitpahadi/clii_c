@@ -1,8 +1,10 @@
-#include<iostream>
-
-using namespace std;
+#include"cli.h"
 
 int main()
 {
- cout << "Hello , cli" << endl;
+    CLI c;
+
+    c.run();
+
+    return 0;
 }
