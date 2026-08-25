@@ -12,7 +12,7 @@
         cout << "************Devloper Mode**************" << endl;
         while(true)
         {
-            cout << "dev > ";
+            cout << "sanc"<< "<" << filesystem::current_path().string()<< "> -";
             if(!getline(cin,input))
             {
                 break;
@@ -42,6 +42,10 @@
         commands.push_back({"ls", "list the directory inthe sys"});
         commands.push_back({"mkdir", "makes the directory inside the file"});
         commands.push_back({"pwd", "show the current directory"});
+        commands.push_back({"cd", "change directory"});
+        commands.push_back({"version", "which version You are in"});
+        commands.push_back({"founder", "who created the great thing"});
+
 
     }
 
@@ -81,12 +85,78 @@
         {
             commandMkdir(args);
         }
+        else if(command == "cd")
+        {
+            commandCd(args);
+        }  
+        else if(command == "version")
+        {
+            commandVersion();
+        }
+        else if(command == "founder")
+        {
+            commandFounder();
+        }         
         else
         {
             cout << "check for help \n";
         }
     }
-   
+    
+    void CLI::commandCd(const vector<string>& args)
+    {
+        if(args.size() < 2)
+        {
+            cout << "Usage: cd <directory> \n";
+
+            return;
+        }
+        try
+        {
+            filesystem::current_path(args[1]);
+        }
+        catch(const filesystem::filesystem_error& error)
+        {
+            cout << error.what() << '\n';
+        }
+
+    }
+    void CLI::commandFounder()
+    {
+       cout <<
+        R"(
+           |\__/,|   (`\
+          _.|o o  |_   ) )
+        -(((---(((--------
+               / \_/ \
+              /        \
+             /   sanc! \
+            (___)   (___)
+        )" << endl;
+        cout<< "\n \n \n ";
+        cout << "*-------------------------------*\n";
+        cout << "| Never stopping until, stoped!!|\n";
+        cout << "|               sanc            |\n";
+        cout << "*-------------------------------*\n";
+    }
+    void CLI::commandVersion()
+    {
+    cout<<
+       R"(            zzz
+                     z
+                   z
+                  /\_/\
+                 ( -.- )
+                  )   (
+                 (  Z  )
+                  `---'
+        )"
+     <<endl;
+        cout<< "\n";
+       cout << "*--------------------------------------------------*\n";
+       cout << "|  sanc just as baby phase - version - 0.1         |\n";
+       cout << "*--------------------------------------------------*\n";
+    }
     void CLI::commandPwd()
     {
         cout << filesystem::current_path() << '\n';

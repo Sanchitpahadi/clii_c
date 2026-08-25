@@ -17,8 +17,11 @@ public:
 private:
 
     //filesytem 
+    void commandVersion();
+    void commandFounder();
     void commandPwd();
     void commandLs();
+    void commandCd(const vector<string>& args);
     void commandMkdir(const vector<std::string>& args);
 
     //others normal
