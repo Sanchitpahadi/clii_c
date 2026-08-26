@@ -1,10 +1,10 @@
-#include"cli.h"
+#include"sanc.h"
 
 int main()
 {
-    CLI c;
+    SANC san;
 
-    c.run();
+    san.run();
 
     return 0;
 }

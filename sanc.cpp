@@ -1,12 +1,12 @@
 #include <sstream>
 #include<string>
-#include"cli.h"
+#include"sanc.h"
 
-    CLI::CLI()
+    SANC::SANC()
     {
         registerCommands();
     }
-    void CLI::registerCommands(const string& name , const string& description ,CommandHandler handler)
+    void SANC::registerCommands(const string& name , const string& description ,CommandHandler handler)
     {
         command[name] = Commands
         {
@@ -16,7 +16,7 @@
         };
     }
 
-    void CLI::run()
+    void SANC::run()
     {
         string input;
         cout << "************Devloper Mode**************" << endl;
@@ -42,7 +42,7 @@
         }
     }
 
-    void CLI::registerCommands()
+    void SANC::registerCommands()
     {
         
         registerCommands("help",
@@ -54,7 +54,7 @@
             );
         
         registerCommands("status",
-             "show CLI status",
+             "show SANC status",
                          [this](const auto& args)
             {
                 commandStatus(args);
@@ -138,62 +138,28 @@
 
 
     }
-
-    void CLI::processCommand(const string& input)
+    void SANC::processCommand(const string& input)
     {
         CommandArgs args = parseCommand(input);
 
         if(args.empty())
-        {}
-        string command = args[0];
+            return;
 
-        if(command == "help")
+        string commandName = args[0];
+
+        auto it = command.find(commandName);
+
+        if(it == command.end())
         {
-            commandHelp(args);
+            cout << "Unknown command: " << commandName << '\n';
+            cout << "Type 'help' to see available commands.\n";
+            return;
         }
-        else if(command == "status")
-        {
-           commandStatus(args);
-        }
-       else if(command == "clear")
-        {
-           commandClear(args);
-        }
-        else if(command == "echo")
-        {
-            commandEcho(args);
-        }
-        else if(command == "pwd")
-        {
-            commandPwd(args);
-        }
-        else if(command == "ls")
-        {
-            commandLs(args);
-        }
-        else if(command == "mkdir")
-        {
-            commandMkdir(args);
-        }
-        else if(command == "cd")
-        {
-            commandCd(args);
-        }  
-        else if(command == "version")
-        {
-            commandVersion(args);
-        }
-        else if(command == "founder")
-        {
-            commandFounder(args);
-        }         
-        else
-        {
-            cout << "check for help \n";
-        }
+
+        it->second.handler(args);
     }
     
-    void CLI::commandCd(const CommandArgs& args)
+    void SANC::commandCd(const CommandArgs& args)
     {
         if(args.size() < 2)
         {
@@ -211,7 +177,7 @@
         }
 
     }
-    void CLI::commandFounder(const CommandArgs& args)
+    void SANC::commandFounder(const CommandArgs& args)
     {
        cout <<
         R"(
@@ -229,10 +195,11 @@
         cout << "|               sanc            |\n";
         cout << "*-------------------------------*\n";
     }
-    void CLI::commandVersion(const CommandArgs& args)
+    void SANC::commandVersion(const CommandArgs& args)
     {
     cout<<
-       R"(            zzz
+       R"(           
+                         zzz
                      z
                    z
                   /\_/\
@@ -247,12 +214,12 @@
        cout << "|  sanc just as baby phase - version - 0.1         |\n";
        cout << "*--------------------------------------------------*\n";
     }
-    void CLI::commandPwd(const CommandArgs& args)
+    void SANC::commandPwd(const CommandArgs& args)
     {
         cout << filesystem::current_path() << '\n';
     }
 
-    void CLI::commandLs(const CommandArgs& args)
+    void SANC::commandLs(const CommandArgs& args)
     {
         for(const auto& entry : filesystem::directory_iterator(filesystem::current_path()))
         {
@@ -261,7 +228,7 @@
         cout << '\n';
     } 
 
-     void CLI::commandMkdir(const CommandArgs& args)
+     void SANC::commandMkdir(const CommandArgs& args)
     {
         if(args.size() < 2)
         {
@@ -286,7 +253,7 @@
             cout << error.what() << '\n';
         }
     } 
-    void CLI::commandClear(const CommandArgs& args)
+    void SANC::commandClear(const CommandArgs& args)
     {
         #ifdef _WIN32
             system("cls");
@@ -296,7 +263,7 @@
     }
 
 
-    void CLI::commandHelp(const CommandArgs& args)
+    void SANC::commandHelp(const CommandArgs& args)
     {
         for(const auto& [name, cmd] : command)
         {
@@ -309,13 +276,13 @@
     }
   
 
-    void CLI::commandStatus(const CommandArgs& args)
+    void SANC::commandStatus(const CommandArgs& args)
     {
         cout << " its running man \n";
         cout << "Everything going good \n";
     }
 
-    vector<string> CLI::parseCommand(const string& input)
+    vector<string> SANC::parseCommand(const string& input)
     {
         vector<string> args;
 
@@ -331,7 +298,7 @@
         return args;
     }
 
-    void CLI::commandEcho(const CommandArgs& args)
+    void SANC::commandEcho(const CommandArgs& args)
     {   
         for(size_t i = 1; i <args.size(); ++i)
         {

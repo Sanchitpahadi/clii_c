@@ -17,10 +17,10 @@ struct Commands
     CommandHandler handler;
 };
 
-class CLI
+class SANC
 {
 public:
-    CLI();
+    SANC();
     void run();
 private:
 
