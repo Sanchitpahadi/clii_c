@@ -1,6 +1,8 @@
 #include<iostream>
 #include<vector>
 #include<filesystem>
+#include<functional>
+#include<unordered_map>
 
 using namespace std;
 
@@ -8,7 +10,10 @@ struct Command
 {
     string name;
     string description;
+
+    function<void(const vector<string>&) handler>;
 };
+
 class CLI
 {
 public:
@@ -38,5 +43,5 @@ private:
     its just a good if you write variables at bottom cause class is read from the bottom by 
      compilers
     */ 
-    vector<Command> commands; // eg. help status echo exit;
+    unordered_maps<string,Command> command;
 };
