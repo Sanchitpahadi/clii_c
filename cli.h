@@ -6,12 +6,15 @@
 
 using namespace std;
 
-struct Command
+using CommandArgs =vector<string>;
+
+using CommandHandler = function<void(const CommandArgs&)>;
+
+struct Commands
 {
     string name;
     string description;
-
-    function<void(const vector<string>&) handler>;
+    CommandHandler handler;
 };
 
 class CLI
@@ -22,26 +25,29 @@ public:
 private:
 
     //filesytem 
-    void commandVersion();
-    void commandFounder();
-    void commandPwd();
-    void commandLs();
-    void commandCd(const vector<string>& args);
-    void commandMkdir(const vector<std::string>& args);
+    void commandVersion(const CommandArgs& args);
+    void commandFounder(const CommandArgs& args);
+    void commandPwd(const CommandArgs& args);
+    void commandLs(const CommandArgs& args);
+    void commandCd(const CommandArgs& args);
+    void commandMkdir(const CommandArgs& args);
+    void commandClear(const CommandArgs& args);
+    void commandHelp(const CommandArgs& args); // show the commands 
+    void commandStatus(const CommandArgs& args);
+    void commandEcho(const vector<string> & args);
 
     //others normal
     void registerCommands(); // 
     void processCommand(const string& input);
-    void commandClear();
-    void commandHelp(); // show the commands 
-    void commandStatus();
-    void commandEcho(const vector<string> & args);
 
+
+    void registerCommands(const string& name , const string& description , CommandHandler handler);
+    
     vector<string> parseCommand(const string& input); // a whole line into words and store in vecotr
 
     /*
     its just a good if you write variables at bottom cause class is read from the bottom by 
      compilers
     */ 
-    unordered_maps<string,Command> command;
+    unordered_map<string,Commands> command;
 };

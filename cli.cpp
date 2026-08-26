@@ -6,6 +6,16 @@
     {
         registerCommands();
     }
+    void CLI::registerCommands(const string& name , const string& description ,CommandHandler handler)
+    {
+        command[name] = Commands
+        {
+            name,
+            description,
+            handler
+        };
+    }
+
     void CLI::run()
     {
         string input;
@@ -34,24 +44,104 @@
 
     void CLI::registerCommands()
     {
-        commands.push_back({"help", "show available command"});
-        commands.push_back({"status", "show CLI status"});
-        commands.push_back({"echo", "print the text"});
-        commands.push_back({"clear", "clear the screen"});
-        commands.push_back({"exit", "exit the program"});
-        commands.push_back({"ls", "list the directory inthe sys"});
-        commands.push_back({"mkdir", "makes the directory inside the file"});
-        commands.push_back({"pwd", "show the current directory"});
-        commands.push_back({"cd", "change directory"});
-        commands.push_back({"version", "which version You are in"});
-        commands.push_back({"founder", "who created the great thing"});
+        
+        registerCommands("help",
+             "show available command", 
+             [this](const auto& args)
+            {
+                commandHelp(args);
+            }
+            );
+        
+        registerCommands("status",
+             "show CLI status",
+                         [this](const auto& args)
+            {
+                commandStatus(args);
+            }
+        );
+        
+        registerCommands("echo",
+             "print the text",
+            [this](const auto& args)
+            {
+                commandEcho(args);
+            }
+            );
+        
+        registerCommands("clear",
+             "clear the screen",
+            [this](const auto& args)
+            {
+                commandClear(args);
+            }
+        );
+       /*
+            registerCommands("exit",
+             "exit the program",
+            [this](const auto& args)
+            {
+                commandExit(args);
+            }
+        );
+       */ 
+
+        
+        registerCommands("ls",
+             "list the directory inthe sys",
+            [this](const auto& args)
+            {
+                commandLs(args);
+            }
+        );
+    
+        
+        registerCommands("mkdir", 
+            "makes the directory inside the file",
+            [this](const auto& args)
+            {
+                commandMkdir(args);
+            }
+        );
+        
+        registerCommands("pwd",
+             "show the current directory",
+            [this](const auto& args)
+            {
+                commandPwd(args);
+            }
+            );
+        
+        registerCommands("cd",
+            "change directory",
+            [this](const auto& args)
+            {
+                commandCd(args);
+            }
+        );
+        
+        registerCommands("version",
+            "which version You are in",
+            [this](const auto& args)
+            {
+                commandVersion(args);
+            }
+        );
+        
+        registerCommands("founder", 
+            "who created the great thing",
+           [this](const auto& args)
+            {
+                commandFounder(args);
+            }
+        );
 
 
     }
 
     void CLI::processCommand(const string& input)
     {
-        vector<string> args = parseCommand(input);
+        CommandArgs args = parseCommand(input);
 
         if(args.empty())
         {}
@@ -59,15 +149,15 @@
 
         if(command == "help")
         {
-            commandHelp();
+            commandHelp(args);
         }
         else if(command == "status")
         {
-           commandStatus();
+           commandStatus(args);
         }
        else if(command == "clear")
         {
-           commandClear();
+           commandClear(args);
         }
         else if(command == "echo")
         {
@@ -75,11 +165,11 @@
         }
         else if(command == "pwd")
         {
-            commandPwd();
+            commandPwd(args);
         }
         else if(command == "ls")
         {
-            commandLs();
+            commandLs(args);
         }
         else if(command == "mkdir")
         {
@@ -91,11 +181,11 @@
         }  
         else if(command == "version")
         {
-            commandVersion();
+            commandVersion(args);
         }
         else if(command == "founder")
         {
-            commandFounder();
+            commandFounder(args);
         }         
         else
         {
@@ -103,7 +193,7 @@
         }
     }
     
-    void CLI::commandCd(const vector<string>& args)
+    void CLI::commandCd(const CommandArgs& args)
     {
         if(args.size() < 2)
         {
@@ -121,7 +211,7 @@
         }
 
     }
-    void CLI::commandFounder()
+    void CLI::commandFounder(const CommandArgs& args)
     {
        cout <<
         R"(
@@ -139,7 +229,7 @@
         cout << "|               sanc            |\n";
         cout << "*-------------------------------*\n";
     }
-    void CLI::commandVersion()
+    void CLI::commandVersion(const CommandArgs& args)
     {
     cout<<
        R"(            zzz
@@ -157,12 +247,12 @@
        cout << "|  sanc just as baby phase - version - 0.1         |\n";
        cout << "*--------------------------------------------------*\n";
     }
-    void CLI::commandPwd()
+    void CLI::commandPwd(const CommandArgs& args)
     {
         cout << filesystem::current_path() << '\n';
     }
 
-    void CLI::commandLs()
+    void CLI::commandLs(const CommandArgs& args)
     {
         for(const auto& entry : filesystem::directory_iterator(filesystem::current_path()))
         {
@@ -171,7 +261,7 @@
         cout << '\n';
     } 
 
-     void CLI::commandMkdir(const vector<std::string>& args)
+     void CLI::commandMkdir(const CommandArgs& args)
     {
         if(args.size() < 2)
         {
@@ -196,7 +286,7 @@
             cout << error.what() << '\n';
         }
     } 
-    void CLI::commandClear()
+    void CLI::commandClear(const CommandArgs& args)
     {
         #ifdef _WIN32
             system("cls");
@@ -205,18 +295,21 @@
         #endif
     }
 
-    void CLI::commandHelp()
+
+    void CLI::commandHelp(const CommandArgs& args)
     {
-        cout << "Available Command \n";
-        for(const Command & command :commands)
+        for(const auto& [name, cmd] : command)
         {
-            cout << " " << command.name << "---" << command.description << "\n";
+            cout << "  "
+                 << name
+                 << " --- "
+                 << cmd.description
+                 << '\n';
         }
-
-        cout << "\n";
     }
+  
 
-    void CLI::commandStatus()
+    void CLI::commandStatus(const CommandArgs& args)
     {
         cout << " its running man \n";
         cout << "Everything going good \n";
@@ -238,7 +331,7 @@
         return args;
     }
 
-    void CLI::commandEcho(const vector<string> & args)
+    void CLI::commandEcho(const CommandArgs& args)
     {   
         for(size_t i = 1; i <args.size(); ++i)
         {
