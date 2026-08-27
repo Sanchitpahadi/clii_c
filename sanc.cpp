@@ -76,16 +76,6 @@
                 commandClear(args);
             }
         );
-       /*
-            registerCommands("exit",
-             "exit the program",
-            [this](const auto& args)
-            {
-                commandExit(args);
-            }
-        );
-       */ 
-
         
         registerCommands("ls",
              "list the directory inthe sys",
